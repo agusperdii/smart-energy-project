@@ -1,0 +1,27 @@
+# Python Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python compiled cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local Database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Environments and secrets
+.env
+
+# Project Dump Files
+zdump/
+
+# Operating System Files
+.DS_Store
+Thumbs.db

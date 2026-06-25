@@ -1,0 +1,171 @@
+{
+  "info": {
+    "_postman_id": "c1f77d33-4f9e-4e41-b209-24751410d481",
+    "name": "SteelSense API Collection",
+    "description": "Collection of endpoints to test raw IoT telemetry ingestion, live/historical dashboard statistics, and manual ML model simulation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Sensor Ingestion (IoT Device)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"machine_id\": \"machine-01\",\n  \"usage_kwh\": 45.2,\n  \"lagging_reactive\": 12.5,\n  \"leading_reactive\": 5.4,\n  \"lagging_pf\": 0.88,\n  \"leading_pf\": 0.92,\n  \"co2\": 1.25\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/sensor",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "sensor"
+          ]
+        },
+        "description": "Ingests raw telemetry parameters from simulated IoT hardware into database, calculating time properties (NSM, day status, weekday name)."
+      },
+      "response": [
+        {
+          "name": "Successful Ingestion Example",
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"machine_id\": \"machine-01\",\n  \"timestamp\": \"2026-06-25T17:42:59.123456\",\n  \"usage_kwh\": 45.2,\n  \"lagging_reactive\": 12.5,\n  \"leading_reactive\": 5.4,\n  \"lagging_pf\": 0.88,\n  \"leading_pf\": 0.92,\n  \"co2\": 1.25,\n  \"nsm\": 63779,\n  \"week_status\": \"Weekday\",\n  \"day_of_week\": \"Thursday\",\n  \"load_type\": null,\n  \"confidence\": null,\n  \"risk_level\": null,\n  \"recommendation\": null,\n  \"alert_status\": null,\n  \"created_at\": \"2026-06-25T17:42:59.123456\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Dashboard Live Telemetry",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/dashboard/live",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "dashboard",
+            "live"
+          ]
+        },
+        "description": "Retrieves the single latest record in the monitoring database (which could be raw or scheduler-aggregated AI predictions)."
+      },
+      "response": [
+        {
+          "name": "Latest Record Example (AI Processed)",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 2,\n  \"machine_id\": \"machine-01\",\n  \"timestamp\": \"2026-06-25T17:43:20.000000\",\n  \"usage_kwh\": 45.2,\n  \"lagging_reactive\": 12.5,\n  \"leading_reactive\": 5.4,\n  \"lagging_pf\": 0.88,\n  \"leading_pf\": 0.92,\n  \"co2\": 1.25,\n  \"nsm\": 63800,\n  \"week_status\": \"Weekday\",\n  \"day_of_week\": \"Thursday\",\n  \"load_type\": \"Light_Load\",\n  \"confidence\": 0.90,\n  \"risk_level\": \"Low\",\n  \"recommendation\": \"Idle or low-load status. Recommend shutting down non-essential systems and standby equipment to minimize baseline consumption.\",\n  \"alert_status\": \"Normal\",\n  \"created_at\": \"2026-06-25T17:43:20.123456\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Historical Telemetry",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/dashboard/history?limit=10",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "dashboard",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Limits the number of returned records (1-200)"
+            }
+          ]
+        },
+        "description": "Retrieves historical database records sorted chronologically (ascending) for dashboard charts."
+      },
+      "response": [
+        {
+          "name": "Historical Rows Example",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"machine_id\": \"machine-01\",\n    \"timestamp\": \"2026-06-25T17:42:59.123456\",\n    \"usage_kwh\": 45.2,\n    \"lagging_reactive\": 12.5,\n    \"leading_reactive\": 5.4,\n    \"lagging_pf\": 0.88,\n    \"leading_pf\": 0.92,\n    \"co2\": 1.25,\n    \"nsm\": 63779,\n    \"week_status\": \"Weekday\",\n    \"day_of_week\": \"Thursday\",\n    \"load_type\": null,\n    \"confidence\": null,\n    \"risk_level\": null,\n    \"recommendation\": null,\n    \"alert_status\": null,\n    \"created_at\": \"2026-06-25T17:42:59.123456\"\n  },\n  {\n    \"id\": 2,\n    \"machine_id\": \"machine-01\",\n    \"timestamp\": \"2026-06-25T17:43:20.000000\",\n    \"usage_kwh\": 45.2,\n    \"lagging_reactive\": 12.5,\n    \"leading_reactive\": 5.4,\n    \"lagging_pf\": 0.88,\n    \"leading_pf\": 0.92,\n    \"co2\": 1.25,\n    \"nsm\": 63800,\n    \"week_status\": \"Weekday\",\n    \"day_of_week\": \"Thursday\",\n    \"load_type\": \"Light_Load\",\n    \"confidence\": 0.90,\n    \"risk_level\": \"Low\",\n    \"recommendation\": \"Idle or low-load status. Recommend shutting down non-essential systems and standby equipment to minimize baseline consumption.\",\n    \"alert_status\": \"Normal\",\n    \"created_at\": \"2026-06-25T17:43:20.123456\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Manual Model Simulation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usage_kwh\": 250.0,\n  \"lagging_reactive\": 80.0,\n  \"leading_reactive\": 20.0,\n  \"lagging_pf\": 0.82,\n  \"leading_pf\": 0.88,\n  \"nsm\": 45000,\n  \"week_status\": \"Weekend\",\n  \"day_of_week\": \"Sunday\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/simulate",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "simulate"
+          ]
+        },
+        "description": "Submits electrical metrics manually to compute instant ML classification load types, risk levels, alert status, and recommendations without database persistence."
+      },
+      "response": [
+        {
+          "name": "Medium Load Prediction Example",
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"load_type\": \"Medium_Load\",\n  \"confidence\": 0.85,\n  \"risk_level\": \"Medium\",\n  \"recommendation\": \"Normal operational load but power factor is low. Check capacitor banks to avoid low power factor utility penalties.\",\n  \"alert_status\": \"Warning\"\n}"
+        }
+      ]
+    }
+  ]
+}
