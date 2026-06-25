@@ -13,38 +13,41 @@ import {
 } from "lucide-react";
 
 interface ScatterPoint {
-  x: number; // usage_kwh
-  y: number; // lagging_reactive
+  x: number;
+  y: number;
   pf: number;
   label: "Light_Load" | "Medium_Load" | "Maximum_Load";
 }
 
 interface LoadCurvePoint {
   hour: string;
-  val: number; // kWh
+  val: number;
   label: string;
 }
 
+const apiSimUrl = import.meta.env.VITE_API_SIMULATION_URL || "http://localhost:8000/api/v1/simulate";
+let apiBaseUrl = "http://localhost:8000";
+try {
+  const urlObj = new URL(apiSimUrl);
+  apiBaseUrl = urlObj.origin;
+} catch (e) {
+  apiBaseUrl = "";
+}
 export default function AboutPage() {
-  // Backend Connectivity states
   const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
   const [apiMetadata, setApiMetadata] = useState<{ status?: string; service?: string; docs_url?: string; latency?: number } | null>(null);
 
-  // Active Tab for Advanced EDA Chart
   const [edaTab, setEdaTab] = useState<"scatter" | "curve">("scatter");
   
-  // Hover state for scatter plot point
   const [hoveredPoint, setHoveredPoint] = useState<ScatterPoint | null>(null);
   
-  // Hover state for load curve point
   const [hoveredCurvePoint, setHoveredCurvePoint] = useState<LoadCurvePoint | null>(null);
 
-  // Check backend health
   const checkApiHealth = async () => {
     setApiStatus("checking");
     const startTime = Date.now();
     try {
-      const res = await fetch("http://localhost:8000/", { mode: "cors", signal: AbortSignal.timeout(3000) });
+      const res = await fetch(`${apiBaseUrl}/`, { mode: "cors", signal: AbortSignal.timeout(3000) });
       if (res.ok) {
         const data = await res.json();
         const latency = Date.now() - startTime;
@@ -79,9 +82,7 @@ export default function AboutPage() {
     { name: "load_type", type: "string", desc: "Target kelas klasifikasi: \"Light_Load\" (Beban Rendah), \"Medium_Load\" (Beban Sedang), atau \"Maximum_Load\" (Beban Puncak)" },
   ];
 
-  // Static mock scatter plot points modeled on Steel Industry dataset clustering
   const scatterPoints: ScatterPoint[] = [
-    // Light Load Cluster (Low kWh, Low Reactive)
     { x: 30, y: 12, pf: 0.928, label: "Light_Load" },
     { x: 45, y: 15, pf: 0.949, label: "Light_Load" },
     { x: 22, y: 8, pf: 0.939, label: "Light_Load" },
@@ -93,7 +94,6 @@ export default function AboutPage() {
     { x: 32, y: 10, pf: 0.953, label: "Light_Load" },
     { x: 25, y: 9, pf: 0.941, label: "Light_Load" },
 
-    // Medium Load Cluster (Medium kWh, Medium/Low Reactive)
     { x: 180, y: 48, pf: 0.966, label: "Medium_Load" },
     { x: 140, y: 38, pf: 0.965, label: "Medium_Load" },
     { x: 220, y: 72, pf: 0.950, label: "Medium_Load" },
@@ -105,12 +105,10 @@ export default function AboutPage() {
     { x: 130, y: 35, pf: 0.966, label: "Medium_Load" },
     { x: 175, y: 50, pf: 0.962, label: "Medium_Load" },
     
-    // Low PF Medium Anomalies (Medium kWh, High Reactive)
     { x: 165, y: 140, pf: 0.762, label: "Medium_Load" },
     { x: 230, y: 190, pf: 0.771, label: "Medium_Load" },
     { x: 195, y: 155, pf: 0.783, label: "Medium_Load" },
 
-    // Maximum Load Cluster (High kWh, High Reactive)
     { x: 620, y: 180, pf: 0.960, label: "Maximum_Load" },
     { x: 580, y: 170, pf: 0.959, label: "Maximum_Load" },
     { x: 740, y: 240, pf: 0.951, label: "Maximum_Load" },
@@ -122,7 +120,6 @@ export default function AboutPage() {
     { x: 780, y: 275, pf: 0.943, label: "Maximum_Load" },
     { x: 710, y: 220, pf: 0.955, label: "Maximum_Load" },
     
-    // Low PF Maximum Anomalies (High kWh, Extreme Reactive)
     { x: 590, y: 390, pf: 0.835, label: "Maximum_Load" },
     { x: 670, y: 440, pf: 0.836, label: "Maximum_Load" },
   ];
@@ -153,7 +150,6 @@ export default function AboutPage() {
 
   return (
     <div className="space-y-8 pb-16 animate-fade-in text-justify relative">
-      {/* Inline CSS for Custom Flow Animations */}
       <style>{`
         @keyframes pulse-flow {
           0% { left: 0%; opacity: 0; }
@@ -181,11 +177,9 @@ export default function AboutPage() {
         }
       `}</style>
 
-      {/* Decorative Radial Background Glows */}
       <div className="absolute top-10 right-0 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
       <div className="absolute bottom-20 left-0 w-96 h-96 rounded-full bg-emerald-500/3 blur-3xl pointer-events-none" />
 
-      {/* Page Title */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/30 pb-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -201,9 +195,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Intro Grid with visual telemetry data flow pipeline */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left: Background with data pipeline flow diagram */}
         <div className="lg:col-span-2 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-6 shadow-xs text-left relative overflow-hidden flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
           <div className="space-y-3">
             <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
@@ -218,12 +210,10 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {/* Graphical Pipeline Flow Diagram - Polished and Glowing */}
           <div className="space-y-3 pt-2">
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Aliran Data Telemetri Real-Time</span>
             
             <div className="flex flex-col md:flex-row gap-6 md:gap-4 items-center justify-between bg-accent/20 p-6 rounded-2xl border border-border/30 relative">
-              {/* Step 1 Node */}
               <div className="flex flex-col items-center text-center space-y-2 relative z-10 w-28">
                 <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-xs transition-transform duration-300 hover:scale-105">
                   <Cpu className="h-5 w-5" />
@@ -234,13 +224,11 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Connector Line 1 */}
               <div className="hidden md:block flex-1 h-[2px] bg-dashed border-t-2 border-dashed border-border/60 relative w-full mx-2">
                 <div className="animate-flow-dot" style={{ animationDelay: "0s" }} />
               </div>
               <div className="block md:hidden text-muted-foreground text-xs leading-none">&darr;</div>
 
-              {/* Step 2 Node */}
               <div className="flex flex-col items-center text-center space-y-2 relative z-10 w-28">
                 <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shadow-xs transition-transform duration-300 hover:scale-105">
                   <Server className="h-5 w-5" />
@@ -251,13 +239,11 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Connector Line 2 */}
               <div className="hidden md:block flex-1 h-[2px] bg-dashed border-t-2 border-dashed border-border/60 relative w-full mx-2">
                 <div className="animate-flow-dot animate-flow-dot-emerald" style={{ animationDelay: "1.5s" }} />
               </div>
               <div className="block md:hidden text-muted-foreground text-xs leading-none">&darr;</div>
 
-              {/* Step 3 Node */}
               <div className="flex flex-col items-center text-center space-y-2 relative z-10 w-28">
                 <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center shadow-xs transition-transform duration-300 hover:scale-105">
                   <Database className="h-5 w-5" />
@@ -271,7 +257,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Right: Technical goals packed in 3 mini KPI cards */}
         <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 flex flex-col justify-between text-left space-y-4 hover:border-primary/20 transition-all duration-300">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
@@ -284,7 +269,6 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-4 flex-1 flex flex-col justify-center">
-            {/* Goal 1 */}
             <div className="flex gap-4 items-start p-3.5 rounded-xl bg-accent/20 border border-border/30 hover:border-amber-500/20 transition-all duration-300">
               <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 shrink-0">
                 <Activity className="h-4.5 w-4.5" />
@@ -297,7 +281,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Goal 2 */}
             <div className="flex gap-4 items-start p-3.5 rounded-xl bg-accent/20 border border-border/30 hover:border-emerald-500/20 transition-all duration-300">
               <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500 shrink-0">
                 <Zap className="h-4.5 w-4.5" />
@@ -310,7 +293,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Goal 3 */}
             <div className="flex gap-4 items-start p-3.5 rounded-xl bg-accent/20 border border-border/30 hover:border-primary/20 transition-all duration-300">
               <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
                 <Server className="h-4.5 w-4.5" />
@@ -326,7 +308,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Dataset & Advanced EDA Section */}
       <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-6 shadow-xs text-left hover:border-primary/20 transition-all duration-300">
         <div className="space-y-1">
           <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
@@ -341,7 +322,6 @@ export default function AboutPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-5">
-          {/* Table (2 Columns Span on LG) */}
           <div className="lg:col-span-2 overflow-x-auto rounded-xl border border-border/40 h-[430px] overflow-y-auto bg-card/60 backdrop-blur-md shadow-inner">
             <table className="w-full text-left border-collapse text-[11px]">
               <thead>
@@ -367,12 +347,9 @@ export default function AboutPage() {
             </table>
           </div>
 
-          {/* Advanced Visualizations (3 Columns Span on LG) */}
           <div className="lg:col-span-3 p-6 rounded-xl border border-border/50 bg-accent/5 flex flex-col justify-between h-[430px] relative overflow-hidden">
-            {/* Tab Glassy border */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border/50 to-transparent" />
             
-            {/* Interactive Tab Selectors */}
             <div className="flex items-center justify-between border-b border-border/50 pb-3">
               <h4 className="font-bold text-xs uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
                 <Sparkles className="h-4 w-4 text-primary animate-pulse" />
@@ -402,7 +379,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* TAB CONTENT: CLUSTERING SCATTER PLOT */}
             {edaTab === "scatter" && (
               <div className="relative flex-1 flex flex-col justify-center pt-4">
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground mb-2">
@@ -410,10 +386,8 @@ export default function AboutPage() {
                   <span>Sumbu X: Daya Aktif (kWh)</span>
                 </div>
                 
-                {/* SVG Scatter Plot Container */}
                 <div className="relative flex-1 bg-background/60 border border-border/50 rounded-lg p-2 flex items-center justify-center">
                   <svg className="w-full h-48 overflow-visible" viewBox="0 0 450 200">
-                    {/* Grid Lines */}
                     <line x1="40" y1="20" x2="430" y2="20" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="40" y1="60" x2="430" y2="60" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="40" y1="100" x2="430" y2="100" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
@@ -423,30 +397,25 @@ export default function AboutPage() {
                     <line x1="235" y1="20" x2="235" y2="170" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="332" y1="20" x2="332" y2="170" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
 
-                    {/* Cluster Background Halo Gradients (subtle background grouping) */}
                     <circle cx="55" cy="165" r="22" fill="oklch(0.796 0.141 135.258 / 10%)" />
                     <circle cx="120" cy="140" r="35" fill="var(--primary)" fillOpacity={0.06} />
                     <circle cx="340" cy="85" r="60" fill="oklch(0.769 0.188 70.08 / 8%)" />
 
-                    {/* Axes */}
                     <line x1="40" y1="170" x2="430" y2="170" stroke="var(--border)" strokeWidth="1.5" />
                     <line x1="40" y1="10" x2="40" y2="170" stroke="var(--border)" strokeWidth="1.5" />
 
-                    {/* Y-Axis Labels */}
                     <text x="32" y="174" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">0</text>
                     <text x="32" y="143" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">125</text>
                     <text x="32" y="103" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">250</text>
                     <text x="32" y="63" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">375</text>
                     <text x="32" y="24" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">500</text>
 
-                    {/* X-Axis Labels */}
                     <text x="40" y="182" fontSize="8" fill="var(--muted-foreground)" textAnchor="middle">0</text>
                     <text x="137" y="182" fontSize="8" fill="var(--muted-foreground)" textAnchor="middle">250</text>
                     <text x="235" y="182" fontSize="8" fill="var(--muted-foreground)" textAnchor="middle">500</text>
                     <text x="332" y="182" fontSize="8" fill="var(--muted-foreground)" textAnchor="middle">750</text>
                     <text x="430" y="182" fontSize="8" fill="var(--muted-foreground)" textAnchor="middle">1000</text>
 
-                    {/* Scatter Points Mapping */}
                     {scatterPoints.map((pt, idx) => {
                       const cx = 40 + (pt.x / 1000) * 390;
                       const cy = 170 - (pt.y / 500) * 150;
@@ -454,9 +423,9 @@ export default function AboutPage() {
                       const isLight = pt.label === "Light_Load";
                       const isMax = pt.label === "Maximum_Load";
                       
-                      let color = "var(--primary)"; // Medium
-                      if (isLight) color = "oklch(0.796 0.141 135.258)"; // Emerald
-                      else if (isMax) color = "oklch(0.769 0.188 70.08)"; // Amber
+                      let color = "var(--primary)";
+                      if (isLight) color = "oklch(0.796 0.141 135.258)";
+                      else if (isMax) color = "oklch(0.769 0.188 70.08)";
 
                       const isHovered = hoveredPoint && hoveredPoint.x === pt.x && hoveredPoint.y === pt.y;
 
@@ -477,7 +446,6 @@ export default function AboutPage() {
                     })}
                   </svg>
                   
-                  {/* Floating Scatter Tooltip */}
                   {hoveredPoint && (
                     <div className="absolute top-2 right-2 bg-card/90 backdrop-blur-md border border-border p-2.5 rounded-lg text-[10px] space-y-1 shadow-md z-20 w-44 font-mono">
                       <div className="font-bold flex items-center gap-1.5">
@@ -500,7 +468,6 @@ export default function AboutPage() {
                   )}
                 </div>
 
-                {/* Legends */}
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-[9px] text-muted-foreground justify-center pt-2 border-t border-border/20 mt-2">
                   <div className="flex items-center gap-1">
                     <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -518,7 +485,6 @@ export default function AboutPage() {
               </div>
             )}
 
-            {/* TAB CONTENT: DAILY LOAD CURVE */}
             {edaTab === "curve" && (
               <div className="relative flex-1 flex flex-col justify-center pt-4">
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground mb-2">
@@ -526,7 +492,6 @@ export default function AboutPage() {
                   <span>Sumbu X: Waktu Operasional (24 Jam)</span>
                 </div>
 
-                {/* SVG Load Curve Container */}
                 <div className="relative flex-1 bg-background/60 border border-border/50 rounded-lg p-2 flex items-center justify-center">
                   <svg className="w-full h-48 overflow-visible" viewBox="0 0 450 200">
                     <defs>
@@ -536,37 +501,30 @@ export default function AboutPage() {
                       </linearGradient>
                     </defs>
 
-                    {/* Grid Lines */}
                     <line x1="40" y1="20" x2="420" y2="20" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="40" y1="57.5" x2="420" y2="57.5" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="40" y1="95" x2="420" y2="95" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
                     <line x1="40" y1="132.5" x2="420" y2="132.5" stroke="var(--border)" strokeOpacity={0.2} strokeDasharray="3,3" />
 
-                    {/* Axes */}
                     <line x1="40" y1="170" x2="420" y2="170" stroke="var(--border)" strokeWidth="1.5" />
                     <line x1="40" y1="10" x2="40" y2="170" stroke="var(--border)" strokeWidth="1.5" />
 
-                    {/* Y-Axis Labels (Daya kWh) */}
                     <text x="32" y="174" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">0</text>
                     <text x="32" y="136.5" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">150</text>
                     <text x="32" y="99" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">300</text>
                     <text x="32" y="61.5" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">450</text>
                     <text x="32" y="24" fontSize="8" fill="var(--muted-foreground)" textAnchor="end">600</text>
 
-                    {/* X-Axis Labels (Waktu Jam) */}
                     {linePoints.map((pt, i) => (
                       <text key={i} x={pt.x} y="182" fontSize="7" fill="var(--muted-foreground)" textAnchor="middle">
                         {pt.hour}
                       </text>
                     ))}
 
-                    {/* Area path */}
                     <path d={areaD} fill="url(#areaGradient)" />
 
-                    {/* Line path */}
                     <path d={pathD} fill="none" stroke="var(--primary)" strokeWidth="2.5" className="chart-glow-filter" />
 
-                    {/* Curve Points Dots */}
                     {linePoints.map((pt, idx) => {
                       const isHovered = hoveredCurvePoint && hoveredCurvePoint.hour === pt.hour;
                       return (
@@ -586,7 +544,6 @@ export default function AboutPage() {
                     })}
                   </svg>
 
-                  {/* Floating Load Curve Tooltip */}
                   {hoveredCurvePoint && (
                     <div className="absolute top-2 right-2 bg-card/90 backdrop-blur-md border border-border p-2.5 rounded-lg text-[10px] space-y-1 shadow-md z-20 w-44 font-mono">
                       <div className="font-bold flex items-center gap-1.5">
@@ -620,9 +577,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Model Development & Random Forest Details */}
       <div className="grid gap-6 md:grid-cols-2 text-left">
-        {/* Candidate Evaluation */}
         <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-5 shadow-xs hover:border-primary/20 transition-all duration-300">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
@@ -679,7 +634,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Selected Model Performance Report */}
         <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-5 shadow-xs hover:border-primary/20 transition-all duration-300">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
@@ -692,7 +646,6 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-4">
-            {/* Classification Table */}
             <div className="rounded-xl border border-border/40 overflow-hidden text-[11px] bg-card/60 backdrop-blur-md shadow-xs">
               <div className="grid grid-cols-4 bg-accent/40 p-2.5 font-bold text-muted-foreground border-b border-border/40 text-center">
                 <span className="text-left">Kelas Target</span>
@@ -722,7 +675,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Key Takeaways */}
             <div className="p-3.5 rounded-xl bg-accent/20 border border-border/30 space-y-2 text-xs text-muted-foreground leading-relaxed shadow-inner">
               <p>
                 📌 <strong>Klasifikasi Beban Rendah (Light Load):</strong> Menghasilkan F1-score sebesar 0.98, menunjukkan bahwa kondisi waktu menganggur (idle periods) mesin dapat diidentifikasi secara optimal.
@@ -735,7 +687,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Preprocessing Stack Diagram - Redesigned and Visualized */}
       <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-6 shadow-xs text-left hover:border-primary/20 transition-all duration-300">
         <h3 className="font-semibold text-lg flex items-center gap-2 text-primary">
           <Cpu className="h-5 w-5" />
@@ -744,7 +695,6 @@ export default function AboutPage() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 rounded-2xl bg-accent/20 border border-border/30 relative">
           
-          {/* Box 1 */}
           <div className="text-center p-4 rounded-xl bg-background border border-border/50 min-w-44 shadow-xs relative hover:border-primary/20 transition-all duration-300">
             <span className="text-[10px] font-bold text-muted-foreground block uppercase tracking-wider mb-1">6 Fitur Numerik</span>
             <div className="text-xs text-primary font-mono font-bold py-1 px-2 rounded-md bg-accent/30 inline-block mb-1">
@@ -758,7 +708,6 @@ export default function AboutPage() {
           </div>
           <div className="block md:hidden text-muted-foreground text-xs leading-none">&darr;</div>
 
-          {/* Box 2 */}
           <div className="text-center p-4 rounded-xl bg-background border border-border/50 min-w-44 shadow-xs relative hover:border-primary/20 transition-all duration-300">
             <span className="text-[10px] font-bold text-muted-foreground block uppercase tracking-wider mb-1">2 Fitur Kategorik</span>
             <div className="text-xs text-primary font-mono font-bold py-1 px-2 rounded-md bg-accent/30 inline-block mb-1">
@@ -772,7 +721,6 @@ export default function AboutPage() {
           </div>
           <div className="block md:hidden text-muted-foreground text-xs leading-none">&darr;</div>
 
-          {/* Box 3 */}
           <div className="text-center p-4 rounded-xl bg-primary text-primary-foreground min-w-48 shadow-sm relative hover:scale-[1.02] transition-transform duration-300">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/40 rounded-xl blur-xs opacity-30 -z-10" />
             <span className="text-[10px] font-bold opacity-80 block uppercase tracking-wider mb-1">Horizontal Concatenation</span>
@@ -784,7 +732,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Backend API Connectivity Info */}
       <div className="rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs text-left hover:border-primary/20 transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1 flex items-center gap-3">
@@ -827,7 +774,7 @@ export default function AboutPage() {
                   Offline (Modalitas Lokal)
                 </span>
                 <span className="text-[10px] text-muted-foreground text-right">
-                  Mendeteksi API di localhost:8000 tidak aktif.
+                  Mendeteksi API di {apiBaseUrl || "backend"} tidak aktif.
                 </span>
               </div>
             )}
@@ -848,7 +795,7 @@ export default function AboutPage() {
               Detail Service: <span className="font-mono text-primary">{apiMetadata.service || "SteelSense Backend"}</span>
             </span>
             <a
-              href={`http://localhost:8000${apiMetadata.docs_url || "/docs"}`}
+              href={`${apiBaseUrl}${apiMetadata.docs_url || "/docs"}`}
               target="_blank"
               rel="noreferrer"
               className="text-primary hover:underline font-semibold flex items-center gap-1 transition-all"
