@@ -188,7 +188,7 @@ export default function SimulationPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-border/50 bg-card p-4 shadow-xs">
+      <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-4 shadow-xs hover:border-primary/20 transition-all duration-300">
         <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Preset Cepat</h2>
         <div className="flex flex-wrap gap-2">
           {presets.map((preset, index) => {
@@ -209,7 +209,7 @@ export default function SimulationPage() {
 
       <div className="grid gap-6 lg:grid-cols-12">
         <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-6">
-          <div className="rounded-xl border border-border/50 bg-card p-6 space-y-6 shadow-xs">
+          <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 space-y-6 shadow-xs hover:border-primary/20 transition-all duration-300">
             <h3 className="font-semibold text-lg flex items-center gap-2">
               <Activity className="h-5 w-5 text-primary" />
               Input Data
@@ -237,7 +237,7 @@ export default function SimulationPage() {
                   <div className="rounded-lg bg-muted/30 border border-border/40 p-2.5 text-center">
                     <span className="block text-[10px] text-muted-foreground uppercase font-semibold">Tipe Hari</span>
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full inline-block mt-1 ${
-                      weekStatus === "Weekend" ? "bg-amber-500/10 text-amber-500" : "bg-blue-500/10 text-blue-500"
+                      weekStatus === "Weekend" ? "bg-amber-500/10 text-amber-500" : "bg-primary/10 text-primary"
                     }`}>
                       {weekStatus === "Weekend" ? "Weekend" : "Weekday"}
                     </span>
@@ -397,7 +397,7 @@ export default function SimulationPage() {
 
         <div className="lg:col-span-5 flex flex-col">
           {isLoading ? (
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs flex-1 space-y-6 animate-pulse">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs flex-1 space-y-6 animate-pulse">
               <div className="flex items-center justify-between">
                 <div className="h-6 w-32 bg-muted rounded-md" />
                 <div className="h-5 w-20 bg-muted rounded-full" />
@@ -414,7 +414,7 @@ export default function SimulationPage() {
               </div>
             </div>
           ) : results ? (
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs flex-1 space-y-6 animate-fade-in flex flex-col justify-between">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs flex-1 space-y-6 animate-fade-in flex flex-col justify-between hover:border-primary/20 transition-all duration-300">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
@@ -478,8 +478,8 @@ export default function SimulationPage() {
                     <div className="flex items-center gap-2">
                       <div className="relative h-9 w-9 flex items-center justify-center">
                         <svg className="absolute transform -rotate-90 w-full h-full">
-                          <circle cx="18" cy="18" r="14" stroke="oklch(var(--border))" strokeWidth="2.5" fill="transparent" />
-                          <circle cx="18" cy="18" r="14" stroke="oklch(var(--primary))" strokeWidth="2.5" fill="transparent"
+                          <circle cx="18" cy="18" r="14" stroke="var(--border)" strokeWidth="2.5" fill="transparent" />
+                          <circle cx="18" cy="18" r="14" stroke="var(--primary)" strokeWidth="2.5" fill="transparent"
                             strokeDasharray={88}
                             strokeDashoffset={88 - (88 * results.confidenceScore)}
                           />
@@ -533,7 +533,7 @@ export default function SimulationPage() {
       </div>
  
       {history.length > 0 && (
-        <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs space-y-4">
+        <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs space-y-4 hover:border-primary/20 transition-all duration-300">
           <h3 className="font-semibold text-sm flex items-center gap-2 text-muted-foreground">
             <History className="h-4 w-4" />
             Riwayat

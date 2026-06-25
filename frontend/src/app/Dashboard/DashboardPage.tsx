@@ -44,7 +44,7 @@ export default function DashboardPage() {
     let getVal = (r: TelemetryRecord) => r.usage_kwh;
     let minVal = 0;
     let maxVal = 1000;
-    let color = "oklch(var(--primary))";
+    let color = "var(--primary)";
 
     if (activeTab === 'pf') {
       getVal = (r: TelemetryRecord) => r.lagging_pf;
@@ -192,30 +192,30 @@ export default function DashboardPage() {
           )}
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs relative overflow-hidden">
-              <div className="absolute right-4 top-4 text-primary bg-primary/10 p-2 rounded-lg">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs relative overflow-hidden hover:-translate-y-1 hover:border-primary/30 hover:shadow-md transition-all duration-300 group">
+              <div className="absolute right-4 top-4 text-primary bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 p-2 rounded-lg transition-all duration-300">
                 <Zap className="h-4 w-4" />
               </div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Daya Aktif</span>
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold tracking-tight">{currentRecord.usage_kwh.toFixed(2)}</span>
+                <span className="text-3xl font-black tracking-tight text-foreground">{currentRecord.usage_kwh.toFixed(2)}</span>
                 <span className="text-sm font-semibold text-muted-foreground">kW</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2 font-medium flex items-center gap-1">
-                <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                <ArrowUpRight className="h-3 w-3 text-emerald-500 animate-pulse" />
                 Interval 2s
               </p>
             </div>
 
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs relative overflow-hidden">
-              <div className="absolute right-4 top-4 text-amber-500 bg-amber-500/10 p-2 rounded-lg">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs relative overflow-hidden hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-md transition-all duration-300 group">
+              <div className="absolute right-4 top-4 text-amber-500 bg-amber-500/10 group-hover:bg-amber-500/20 group-hover:scale-110 p-2 rounded-lg transition-all duration-300">
                 <Activity className="h-4 w-4" />
               </div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Power Factor</span>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <div>
                   <span className="text-[10px] text-muted-foreground block font-semibold">PF LAGGING</span>
-                  <span className={`text-lg font-bold ${currentRecord.lagging_pf < 0.85 ? "text-red-500 font-extrabold" : "text-foreground"
+                  <span className={`text-lg font-bold ${currentRecord.lagging_pf < 0.85 ? "text-red-500 font-black animate-pulse" : "text-foreground"
                     }`}>{currentRecord.lagging_pf.toFixed(2)}</span>
                 </div>
                 <div>
@@ -225,15 +225,15 @@ export default function DashboardPage() {
               </div>
               <div className="mt-2 h-1.5 w-full bg-muted rounded-full overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ${currentRecord.lagging_pf < 0.85 ? "bg-red-500" : "bg-emerald-500"
+                  className={`h-full rounded-full transition-all duration-500 ${currentRecord.lagging_pf < 0.85 ? "bg-red-500" : "bg-emerald-500"
                     }`}
                   style={{ width: `${currentRecord.lagging_pf * 100}%` }}
                 />
               </div>
             </div>
 
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs relative overflow-hidden">
-              <div className="absolute right-4 top-4 text-purple-500 bg-purple-500/10 p-2 rounded-lg">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs relative overflow-hidden hover:-translate-y-1 hover:border-purple-500/30 hover:shadow-md transition-all duration-300 group">
+              <div className="absolute right-4 top-4 text-purple-500 bg-purple-500/10 group-hover:bg-purple-500/20 group-hover:scale-110 p-2 rounded-lg transition-all duration-300">
                 <Layers className="h-4 w-4" />
               </div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Daya Reaktif</span>
@@ -252,13 +252,13 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs relative overflow-hidden">
-              <div className="absolute right-4 top-4 text-emerald-500 bg-emerald-500/10 p-2 rounded-lg">
+            <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs relative overflow-hidden hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-md transition-all duration-300 group">
+              <div className="absolute right-4 top-4 text-emerald-500 bg-emerald-500/10 group-hover:bg-emerald-500/20 group-hover:scale-110 p-2 rounded-lg transition-all duration-300">
                 <Flame className="h-4 w-4" />
               </div>
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Emisi Karbon</span>
               <div className="mt-4 flex items-baseline gap-1.5">
-                <span className="text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-500">{currentRecord.co2.toFixed(2)}</span>
+                <span className="text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-500">{currentRecord.co2.toFixed(2)}</span>
                 <span className="text-sm font-semibold text-muted-foreground">kg CO₂/h</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2 font-medium">
@@ -267,7 +267,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/50 bg-card p-6 shadow-xs space-y-4">
+          <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs space-y-4 hover:border-primary/20 hover:shadow-xs transition-all duration-300">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="font-semibold text-md flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
@@ -321,14 +321,14 @@ export default function DashboardPage() {
                           y1={y}
                           x2={chartMeta.width - chartMeta.padding}
                           y2={y}
-                          stroke="oklch(var(--foreground))"
+                          stroke="var(--foreground)"
                           strokeDasharray="4 4"
                           strokeWidth="1"
                         />
                         <text
                           x={chartMeta.padding + 5}
                           y={y - 4}
-                          fill="oklch(var(--foreground))"
+                          fill="var(--foreground)"
                           fontSize="9"
                           fontWeight="bold"
                         >
@@ -358,7 +358,7 @@ export default function DashboardPage() {
                       cx={p.x}
                       cy={p.y}
                       r={i === chartMeta.points.length - 1 ? "4.5" : "2"}
-                      fill={i === chartMeta.points.length - 1 ? chartMeta.color : "oklch(var(--background))"}
+                      fill={i === chartMeta.points.length - 1 ? chartMeta.color : "var(--background)"}
                       stroke={chartMeta.color}
                       strokeWidth="2.5"
                       className={i === chartMeta.points.length - 1 ? "animate-pulse" : ""}
@@ -380,7 +380,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-7 rounded-xl border border-border/50 bg-card p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <div className="lg:col-span-7 rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs flex flex-col justify-between space-y-4 hover:border-primary/20 hover:shadow-xs transition-all duration-300">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
@@ -424,7 +424,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 rounded-xl border border-border/50 bg-card p-6 shadow-xs flex flex-col space-y-4 h-[300px]">
+            <div className="lg:col-span-5 rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-xs flex flex-col space-y-4 h-[300px] hover:border-emerald-500/20 hover:shadow-xs transition-all duration-300">
               <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 shrink-0">
                 <Terminal className="h-4 w-4 text-emerald-500" />
                 Log Grid

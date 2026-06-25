@@ -2,7 +2,7 @@ import time
 import random
 import requests
 
-API_URL = "http://localhost:8000/api/v1/sensor"
+API_URL = "https://smart-energy-project.vercel.app/api/v1/sensor"
 MACHINE_ID = "machine-01"
 
 print("==================================================")
