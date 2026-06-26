@@ -181,7 +181,7 @@ export default function SimulationPage() {
     <div className="space-y-6 pb-12 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold tracking-tight bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-          Simulasi Grid
+          Inferensi
         </h1>
         <p className="text-muted-foreground mt-1">
           Uji parameter daya listrik untuk melihat analisis beban dan rekomendasi AI.

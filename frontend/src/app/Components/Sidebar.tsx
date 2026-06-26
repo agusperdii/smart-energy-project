@@ -23,7 +23,7 @@ export function Sidebar() {
 
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/" },
-    { name: "Simulasi", icon: FlaskConical, href: "/simulation" },
+    { name: "Inferensi", icon: FlaskConical, href: "/simulation" },
     { name: "Tentang", icon: Info, href: "/about" },
     { name: "Profil", icon: User, href: "/profile" },
   ];
